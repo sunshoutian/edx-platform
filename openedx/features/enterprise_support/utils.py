@@ -7,6 +7,7 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 
 import third_party_auth
+from enterprise.models import EnterpriseCustomerUser
 from third_party_auth import pipeline
 from student.cookies import set_experiments_is_enterprise_cookie
 
@@ -220,3 +221,16 @@ def update_account_settings_context_for_enterprise(context, enterprise_customer)
             enterprise_context['sync_learner_profile_data'] = identity_provider.sync_learner_profile_data
 
     context.update(enterprise_context)
+
+
+def is_enterprise_learner(user):
+    """
+    Check if learner is an enterprise learner or not.
+
+    Arguments:
+        user (Object): User object
+
+    returns:
+        Boolean value
+    """
+    return EnterpriseCustomerUser.objects.filter(user_id=user.id).exists()

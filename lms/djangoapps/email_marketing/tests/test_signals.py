@@ -17,6 +17,7 @@ from testfixtures import LogCapture
 
 from email_marketing.models import EmailMarketingConfiguration
 from email_marketing.signals import (
+    _create_sailthru_user_vars,
     add_email_marketing_cookies,
     email_marketing_register_user,
     email_marketing_user_field_changed,
@@ -32,6 +33,7 @@ from email_marketing.tasks import (
     update_course_enrollment,
 )
 from openedx.core.djangoapps.lang_pref import LANGUAGE_KEY
+from openedx.features.enterprise_support.tests.factories import EnterpriseCustomerFactory, EnterpriseCustomerUserFactory
 from student.models import Registration
 from student.tests.factories import UserFactory, UserProfileFactory, CourseEnrollmentFactory
 from util.json_request import JsonResponse
@@ -232,13 +234,15 @@ class EmailMarketingTests(TestCase):
         """
         tests that welcome email is not sent to the enterprise learner
         """
+        EnterpriseCustomerUserFactory(
+            user_id=self.user.id,
+            enterprise_customer=EnterpriseCustomerFactory()
+        )
         mock_sailthru_post.return_value = SailthruResponse(JsonResponse({'ok': True}))
         update_user.delay(
-            sailthru_vars={
-                'is_enterprise_learner': True,
-                'enterprise_name': 'test name',
-            },
-            email=self.user.email
+            _create_sailthru_user_vars(self.user, self.user.profile),
+            email=self.user.email,
+            activation=True
         )
         self.assertNotEqual(mock_sailthru_post.call_args[0][0], "send")
 
