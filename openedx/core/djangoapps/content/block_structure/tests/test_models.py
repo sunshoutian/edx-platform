@@ -12,7 +12,7 @@ from uuid import uuid4
 
 from opaque_keys.edx.locator import CourseLocator, BlockUsageLocator
 
-from ..config import PRUNE_OLD_VERSIONS, waffle
+from ..config import waffle
 from ..exceptions import BlockStructureNotFound
 from ..models import BlockStructureModel, _directory_name, _storage_error_handling
 
@@ -30,8 +30,7 @@ class BlockStructureModelTestCase(TestCase):
         self.params = self._create_bsm_params()
 
     def tearDown(self):
-        with waffle().override(PRUNE_OLD_VERSIONS, active=True):
-            BlockStructureModel._prune_files(self.usage_key, num_to_keep=0)
+        BlockStructureModel._prune_files(self.usage_key, num_to_keep=0)
         super(BlockStructureModelTestCase, self).tearDown()
 
     def _assert_bsm_fields(self, bsm, expected_serialized_data):
@@ -106,22 +105,20 @@ class BlockStructureModelTestCase(TestCase):
 
     @patch('openedx.core.djangoapps.content.block_structure.config.num_versions_to_keep', Mock(return_value=1))
     def test_prune_files(self):
-        with waffle().override(PRUNE_OLD_VERSIONS, active=True):
-            self._verify_update_or_create_call('test data', expect_created=True)
-            self._verify_update_or_create_call('updated data', expect_created=False)
-            self._assert_file_count_equal(1)
+        self._verify_update_or_create_call('test data', expect_created=True)
+        self._verify_update_or_create_call('updated data', expect_created=False)
+        self._assert_file_count_equal(1)
 
     @patch('openedx.core.djangoapps.content.block_structure.config.num_versions_to_keep', Mock(return_value=1))
     @patch('openedx.core.djangoapps.content.block_structure.models.BlockStructureModel._delete_files')
     @patch('openedx.core.djangoapps.content.block_structure.models.log')
     def test_prune_exception(self, mock_log, mock_delete):
-        with waffle().override(PRUNE_OLD_VERSIONS, active=True):
-            mock_delete.side_effect = Exception
-            self._verify_update_or_create_call('test data', expect_created=True)
-            self._verify_update_or_create_call('updated data', expect_created=False)
+        mock_delete.side_effect = Exception
+        self._verify_update_or_create_call('test data', expect_created=True)
+        self._verify_update_or_create_call('updated data', expect_created=False)
 
-            self.assertIn('BlockStructure: Exception when deleting old files', mock_log.exception.call_args[0][0])
-            self._assert_file_count_equal(2)  # old files not pruned
+        self.assertIn('BlockStructure: Exception when deleting old files', mock_log.exception.call_args[0][0])
+        self._assert_file_count_equal(2)  # old files not pruned
 
     @ddt.data(
         *product(
@@ -141,9 +138,8 @@ class BlockStructureModelTestCase(TestCase):
             if num_prior_edits:
                 self._assert_file_count_equal(num_prior_edits)
 
-            with waffle().override(PRUNE_OLD_VERSIONS, active=True):
-                self._verify_update_or_create_call('data')
-                self._assert_file_count_equal(min(prune_keep_count, num_prior_edits + 1))
+            self._verify_update_or_create_call('data')
+            self._assert_file_count_equal(min(prune_keep_count, num_prior_edits + 1))
 
     @ddt.data(
         (IOError, BlockStructureNotFound, True),

@@ -21,6 +21,7 @@ BLOCK_STRUCTURES_SETTINGS = dict(
     COURSE_PUBLISH_TASK_DELAY=30,
     TASK_DEFAULT_RETRY_DELAY=30,
     TASK_MAX_RETRIES=5,
+    PRUNING_ACTIVE=True,
 )
 
 COURSE_KEY_PATTERN = r'(?P<course_key_string>[^/+]+(/|\+)[^/+]+(/|\+)[^/?]+)'
