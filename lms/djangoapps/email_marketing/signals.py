@@ -14,7 +14,7 @@ from celery.exceptions import TimeoutError
 from course_modes.models import CourseMode
 from email_marketing.models import EmailMarketingConfiguration
 from openedx.core.djangoapps.waffle_utils import WaffleSwitchNamespace
-from openedx.features.enterprise_support.utils import is_enterprise_learner
+from openedx.features.enterprise_support import api as enterprise_api
 from lms.djangoapps.email_marketing.tasks import update_user, update_user_email, get_email_cookies_via_sailthru
 from openedx.core.djangoapps.lang_pref import LANGUAGE_KEY
 from student.cookies import CREATE_LOGON_COOKIE
@@ -214,7 +214,8 @@ def _create_sailthru_user_vars(user, profile, registration=None):
         sailthru_vars['activation_key'] = registration.activation_key
         sailthru_vars['signupNumber'] = randint(0, 9)
 
-    if is_enterprise_learner(user):
+    enterprise_learner_data = enterprise_api.get_enterprise_learner_data(site=_get_current_site(), user=user)
+    if enterprise_learner_data:
         sailthru_vars['is_enterprise_learner'] = True
 
     return sailthru_vars
