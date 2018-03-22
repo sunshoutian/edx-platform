@@ -690,6 +690,7 @@
     });
 
     testFiles = [
+        'completion/js/spec/ViewedEvent_spec.js',
         'course_bookmarks/js/spec/bookmark_button_view_spec.js',
         'course_bookmarks/js/spec/bookmarks_list_view_spec.js',
         'course_bookmarks/js/spec/course_bookmarks_factory_spec.js',
@@ -778,7 +779,6 @@
         'js/spec/student_account/account_settings_factory_spec.js',
         'js/spec/student_account/account_settings_fields_spec.js',
         'js/spec/student_account/account_settings_view_spec.js',
-        'js/spec/student_account/account_spec.js',
         'js/spec/student_account/emailoptin_spec.js',
         'js/spec/student_account/enrollment_spec.js',
         'js/spec/student_account/finish_auth_spec.js',

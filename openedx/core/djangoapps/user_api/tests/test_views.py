@@ -1055,12 +1055,50 @@ class RegistrationViewTest(ThirdPartyAuthTestMixin, UserAPITestCase):
                 u"type": u"password",
                 u"required": True,
                 u"label": u"Password",
+                u"instructions": u'Your password must contain at least {} characters.'.format(password_min_length()),
                 u"restrictions": {
                     'min_length': password_min_length(),
                     'max_length': password_max_length(),
                 },
             }
         )
+
+    @override_settings(PASSWORD_COMPLEXITY={'NON ASCII': 1, 'UPPER': 3})
+    def test_register_form_password_complexity(self):
+        no_extra_fields_setting = {}
+
+        # Without enabling password policy
+        self._assert_reg_field(
+            no_extra_fields_setting,
+            {
+                u'name': u'password',
+                u'label': u'Password',
+                u'instructions': u'Your password must contain at least {} characters.'.format(password_min_length()),
+                u'restrictions': {
+                    'min_length': password_min_length(),
+                    'max_length': password_max_length(),
+                },
+            }
+        )
+
+        # Now with an enabled password policy
+        with mock.patch.dict(settings.FEATURES, {'ENFORCE_PASSWORD_POLICY': True}):
+            msg = u'Your password must contain at least {} characters, including '\
+                  u'3 uppercase letters & 1 symbol.'.format(password_min_length())
+            self._assert_reg_field(
+                no_extra_fields_setting,
+                {
+                    u'name': u'password',
+                    u'label': u'Password',
+                    u'instructions': msg,
+                    u'restrictions': {
+                        'min_length': password_min_length(),
+                        'max_length': password_max_length(),
+                        'non_ascii': 1,
+                        'upper': 3,
+                    },
+                }
+            )
 
     @override_settings(REGISTRATION_EXTENSION_FORM='openedx.core.djangoapps.user_api.tests.test_helpers.TestCaseForm')
     def test_extension_form_fields(self):
