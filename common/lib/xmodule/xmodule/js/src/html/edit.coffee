@@ -968,7 +968,14 @@ class @HTMLEditingDescriptor
       data['src'] = rewriteStaticLinks(data['src'], '/static/', @base_asset_url)
 
   openImageModal: () =>
-    @imageModal[0].dispatchEvent(new CustomEvent('openModal', {bubbles: true}))
+    img = $(@visualEditor.selection.getNode())
+    imgAttrs = {}
+    if img && img.is('img')
+      imgAttrs['src'] = img.attr('src')
+      imgAttrs['alt'] = img.attr('alt')
+      imgAttrs['width'] = parseInt(img.attr('width'), 10)
+      imgAttrs['height'] = parseInt(img.attr('height'), 10)
+    @imageModal[0].dispatchEvent(new CustomEvent('openModal', {bubbles: true, detail: imgAttrs}))
 
   closeImageModal: () =>
     @imageModal[0].dispatchEvent(new CustomEvent('closeModal', {bubbles: true}))
