@@ -8,15 +8,15 @@ import EntitlementFormContainer from '../EntitlementForm/container.jsx';
 
 const Main = props => (
   <div>
-    <h2>
-      Entitlement Support Page
-    </h2>
     <StatusAlert
       alertType="danger"
       dialog={props.errorMessage}
       onClose={props.dismissErrorMessage}
       open={!!props.errorMessage}
     />
+    <h2>
+      Student Support: Entitlement
+    </h2>
     <EntitlementFormContainer />
     { !props.isFormOpen ? <MainContent { ...props } /> : null }
   </div>
