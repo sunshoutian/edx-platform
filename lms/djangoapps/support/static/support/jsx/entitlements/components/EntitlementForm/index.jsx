@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Form, Button, InputSelect, InputText, TextArea } from '@edx/paragon';
+import { Button, InputSelect, InputText, TextArea } from '@edx/paragon';
 
 
 class EntitlementForm extends React.Component {
@@ -23,9 +23,6 @@ class EntitlementForm extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-  // Component Lifecycle function
-  // updates state to reflect incoming props
-  // This prepopulates the re-issue form with the correct values.
     const isReissue = nextProps.entitlement !== null && nextProps.entitlement !== undefined;
     this.setState({
       isReissue,
@@ -78,6 +75,7 @@ class EntitlementForm extends React.Component {
 
     const body = (
       <div>
+        <h3> {title} </h3>
         <InputText
           disabled={isReissue}
           name="courseUuid"
@@ -135,7 +133,7 @@ class EntitlementForm extends React.Component {
 
 EntitlementForm.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  entitlement: PropTypes.shape({
+  entitlement:PropTypes.shape({
     uuid: PropTypes.string.isRequired,
     courseUuid: PropTypes.string.isRequired,
     enrollmentCourseRun: PropTypes.string,
@@ -151,7 +149,7 @@ EntitlementForm.propTypes = {
       unenrolledRun: PropTypes.string,
     })),
     user: PropTypes.string.isRequired,
-  }),
+  }).isRequired,
   createEntitlement: PropTypes.func.isRequired,
   reissueEntitlement: PropTypes.func.isRequired,
   closeForm: PropTypes.func.isRequired,

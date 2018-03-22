@@ -11,12 +11,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  createEntitlement: ({ username, courseUuid, mode, comments }) => dispatch(
-    createEntitlement({ username, courseUuid, mode, comments })
-  ),
-  reissueEntitlement: ({ entitlement, comments }) => dispatch(
-    reissueEntitlement({ entitlement, comments })
-  ),
+  createEntitlement: ({ username, courseUuid, mode, comments }) => 
+    dispatch(createEntitlement({ username, courseUuid, mode, comments })),
+  reissueEntitlement: ({ entitlement, comments }) => 
+    dispatch(reissueEntitlement({ entitlement, comments })),
   closeForm: () => dispatch(closeForm()),
 });
 

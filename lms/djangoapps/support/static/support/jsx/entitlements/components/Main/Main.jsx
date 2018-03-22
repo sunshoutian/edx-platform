@@ -17,26 +17,41 @@ const Main = props => (
     <h2>
       Student Support: Entitlement
     </h2>
-    <EntitlementFormContainer />
-    { !props.isFormOpen ? <MainContent { ...props } /> : null }
+    <MainContent
+      isFormOpen={props.isFormOpen}
+      ecommerceUrl={props.ecommerceUrl}
+      openCreationForm={props.openCreationForm}
+    /> 
   </div>
 );
 
-const MainContent = props => (
-  <div>
-    <SearchContainer />
-    <Button
-      className={['btn', 'btn-primary']}
-      label="Create New Entitlement"
-      onClick={props.openCreationForm}
-    />
-    <EntitlementSupportTableContainer ecommerceUrl={props.ecommerceUrl} />
-  </div>
-);
+const MainContent = props => {
+  if (props.isFormOpen) {
+    return <EntitlementFormContainer />
+  } else {
+    return (
+      <div>
+        <SearchContainer />
+        <Button
+          className={['btn', 'btn-primary']}
+          label="Create New Entitlement"
+          onClick={props.openCreationForm}
+        />
+        <EntitlementSupportTableContainer ecommerceUrl={props.ecommerceUrl} />
+      </div>
+    );
+  }; 
+};
 
 Main.propTypes = {
   errorMessage: PropTypes.string.isRequired,
   dismissErrorMessage: PropTypes.func.isRequired,
+  openCreationForm: PropTypes.func.isRequired,
+  ecommerceUrl: PropTypes.string.isRequired,
+  isFormOpen: PropTypes.bool.isRequired
+};
+
+MainContent.propTypes = {
   openCreationForm: PropTypes.func.isRequired,
   ecommerceUrl: PropTypes.string.isRequired,
   isFormOpen: PropTypes.bool.isRequired
