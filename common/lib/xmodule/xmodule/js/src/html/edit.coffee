@@ -81,7 +81,7 @@ class @HTMLEditingDescriptor
         },
         image_advtab: true,
         # We may want to add "styleselect" when we collect all styles used throughout the LMS
-        toolbar: "formatselect | fontselect | bold italic underline forecolor wrapAsCode | bullist numlist outdent indent blockquote | link unlink image | code",
+        toolbar: "formatselect | fontselect | bold italic underline forecolor wrapAsCode | bullist numlist outdent indent blockquote | link unlink insertImage | code",
         block_formats: interpolate("%(paragraph)s=p;%(preformatted)s=pre;%(heading3)s=h3;%(heading4)s=h4;%(heading5)s=h5;%(heading6)s=h6", {
             paragraph: gettext("Paragraph"),
             preformatted: gettext("Preformatted"),
@@ -937,7 +937,14 @@ class @HTMLEditingDescriptor
         ed.formatter.toggle('code')
     })
 
+    ed.addButton('insertImage', {
+      title : 'Insert/Edit Image',
+      image : "#{baseUrl}/images/ico-tinymce-code.png",
+      onclick : @openImageModal
+    })
+
     @visualEditor = ed
+    @imageModal = $('#edit-image-modal .modal')
 
     # These events were added to the plugin code as the TinyMCE PluginManager
     # does not fire any events when plugins are opened or closed.
@@ -948,6 +955,8 @@ class @HTMLEditingDescriptor
     ed.on('ShowCodeEditor', @showCodeEditor)
     ed.on('SaveCodeEditor', @saveCodeEditor)
 
+    @imageModal.on('submitForm', @editImageSubmit)
+
   editImage: (data) =>
     # Called when the image plugin will be shown. Input arg is the JSON version of the image data.
     if data['src']
@@ -957,6 +966,23 @@ class @HTMLEditingDescriptor
     # Called when the image plugin is saved. Input arg is the JSON version of the image data.
     if data['src']
       data['src'] = rewriteStaticLinks(data['src'], '/static/', @base_asset_url)
+
+  openImageModal: () =>
+    @imageModal[0].dispatchEvent(new CustomEvent('openModal', {bubbles: true}))
+
+  closeImageModal: () =>
+    @imageModal[0].dispatchEvent(new CustomEvent('closeModal', {bubbles: true}))
+
+  saveImageFromModal: (data) =>
+    # Insert img node from studio-frontend modal form data passed as a javascript object
+    if data['src']
+      data['src'] = rewriteStaticLinks(data['src'], '/static/', @base_asset_url)
+
+    @visualEditor.insertContent(@visualEditor.dom.createHTML('img', data))
+
+  editImageSubmit: (event) =>
+    if event.detail
+      @saveImageFromModal(event.detail)
 
   editLink: (data) =>
     # Called when the link plugin will be shown. Input arg is the JSON version of the link data.

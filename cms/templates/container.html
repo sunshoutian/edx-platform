@@ -161,7 +161,7 @@ from openedx.core.djangolib.markup import HTML, Text
             </aside>
         </section>
         % if waffle().is_enabled(ENABLE_IN_CONTEXT_IMAGE_SELECTION):
-          <div id="edit-image-modal" style="display:none;">
+          <div id="edit-image-modal">
             <%static:studiofrontend entry="editImageModal">
               {
                 "lang": "en"
