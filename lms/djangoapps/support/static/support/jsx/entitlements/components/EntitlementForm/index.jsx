@@ -7,35 +7,24 @@ import { Button, InputSelect, InputText, TextArea } from '@edx/paragon';
 class EntitlementForm extends React.Component {
   constructor(props) {
     super(props);
+
+    const isReissue = props.entitlement !== null && props.entitlement !== undefined;
+
     this.state = {
-      isReissue: false,
-      courseUuid: '',
-      username: '',
-      mode: '',
+      isReissue,
+      courseUuid: isReissue ? props.entitlement.courseUuid : '',
+      mode: isReissue ? props.entitlement.mode : '',
+      username: isReissue ? props.entitlement.user : '',
       comments: 'Add any additional comments here',
     };
+
+
     this.handleCourseUUIDChange = this.handleCourseUUIDChange.bind(this);
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handleModeChange = this.handleModeChange.bind(this);
     this.handleCommentsChange = this.handleCommentsChange.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.onClose = this.onClose.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const isReissue = nextProps.entitlement !== null && nextProps.entitlement !== undefined;
-    this.setState({
-      isReissue,
-      comments: 'Add any additional comments here',
-    });
-    if (isReissue) {
-      const { courseUuid, mode, user } = nextProps.entitlement;
-      this.setState({
-        courseUuid,
-        mode,
-        username: user,
-      });
-    }
   }
 
   onClose() {

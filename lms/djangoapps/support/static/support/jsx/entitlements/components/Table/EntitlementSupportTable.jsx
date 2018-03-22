@@ -57,10 +57,10 @@ const parseEntitlementData = (entitlements, ecommerceUrl, openReissueForm) =>
         content={orderNumber || ''}
       />,
       button: <Button
-        disabled={!enrollmentCourseRun}
+        
         className={['btn', 'btn-primary']}
         label="Reissue"
-        onClick={openReissueForm.bind(this, entitlement)}
+        onClick={() => openReissueForm(entitlement)}
       />,
     });
   });
