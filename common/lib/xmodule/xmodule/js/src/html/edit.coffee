@@ -973,8 +973,8 @@ class @HTMLEditingDescriptor
     if img && img.is('img')
       imgAttrs['src'] = img.attr('src')
       imgAttrs['alt'] = img.attr('alt')
-      imgAttrs['width'] = parseInt(img.attr('width'), 10)
-      imgAttrs['height'] = parseInt(img.attr('height'), 10)
+      imgAttrs['width'] = parseInt(img.attr('width'), 10) || img[0].naturalWidth
+      imgAttrs['height'] = parseInt(img.attr('height'), 10) || img[0].naturalHeight
     @imageModal[0].dispatchEvent(new CustomEvent('openModal', {bubbles: true, detail: imgAttrs}))
 
   closeImageModal: () =>
