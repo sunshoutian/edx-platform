@@ -244,7 +244,7 @@ class SummaryResults(object):
         """
         self.total_violations = 0
         self.totals_by_rule = dict.fromkeys(
-            [rule.rule_id for rule in Rules.__members__.values()], 0
+            [rule.rule_id for rule in Rules.ruleset.values()], 0
         )
 
     def add_violation(self, violation):
