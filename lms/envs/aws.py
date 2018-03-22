@@ -108,6 +108,10 @@ CELERY_ROUTES = "{}celery.Router".format(QUEUE_VARIANT)
 # don't know what that call is or if it's active at this point in the code.
 if os.environ.get('QUEUE') == 'high_mem':
     CELERYD_MAX_TASKS_PER_CHILD = 1
+# ACE needs to be treated similarly, see EDUCATOR-2456 for more details
+if os.environ.get('QUEUE') == 'ace':
+    CELERYD_MAX_TASKS_PER_CHILD = 2500  # empirically chosen after viewing data
+
 
 CELERYBEAT_SCHEDULE = {}  # For scheduling tasks, entries can be added to this dict
 
